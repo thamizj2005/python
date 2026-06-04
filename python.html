@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Revision — Thamizh</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0d0f;
+  --surface: #16161a;
+  --surface2: #1e1e24;
+  --surface3: #252530;
+  --border: #2a2a36;
+  --border2: #363648;
+  --text: #e8e8f0;
+  --muted: #888899;
+  --accent: #7c6dfa;
+  --accent2: #4fd1a5;
+  --accent3: #fa8c5a;
+  --accent4: #f472b6;
+  --code-bg: #111117;
+  --pill-bg: #2a2a36;
+  --radius: 10px;
+  --radius-lg: 16px;
+  --mono: 'Space Mono', monospace;
+  --sans: 'DM Sans', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+/* ─── Layout ─── */
+.shell { display: flex; min-height: 100vh; }
+
+.sidebar {
+  width: 240px;
+  min-height: 100vh;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  position: fixed;
+  top: 0; left: 0;
+  display: flex; flex-direction: column;
+  overflow-y: auto;
+  z-index: 100;
+}
+
+.main {
+  margin-left: 240px;
+  flex: 1;
+  max-width: 860px;
+  padding: 48px 56px;
+}
+
+/* ─── Sidebar ─── */
+.sidebar-header {
+  padding: 28px 20px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-logo {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.sidebar-sub {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 300;
+}
+
+.sidebar-section {
+  padding: 16px 20px 6px;
+  font-size: 10px;
+  font-family: var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 20px;
+  cursor: pointer;
+  font-size: 13.5px;
+  font-weight: 400;
+  color: #aaaabc;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+  border-left: 2px solid transparent;
+}
+.nav-item:hover { background: var(--surface2); color: var(--text); }
+.nav-item.active {
+  background: var(--surface2);
+  color: var(--accent);
+  border-left-color: var(--accent);
+  font-weight: 500;
+}
+.nav-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--border2);
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.nav-item.active .nav-dot { background: var(--accent); }
+.nav-item:hover .nav-dot { background: var(--muted); }
+
+.progress-bar-wrap {
+  padding: 16px 20px;
+  margin-top: auto;
+  border-top: 1px solid var(--border);
+}
+.progress-label {
+  display: flex; justify-content: space-between;
+  font-size: 11px; color: var(--muted); margin-bottom: 8px;
+}
+.progress-track {
+  height: 4px; background: var(--border2);
+  border-radius: 2px; overflow: hidden;
+}
+.progress-fill {
+  height: 100%; width: 38%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 2px;
+}
+
+/* ─── Content Sections ─── */
+.section { display: none; }
+.section.active { display: block; }
+
+.page-title {
+  font-family: var(--mono);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+  letter-spacing: -0.02em;
+}
+.page-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-family: var(--mono);
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 28px;
+  background: var(--pill-bg);
+  color: var(--muted);
+  border: 1px solid var(--border2);
+}
+
+/* ─── Cards ─── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px 28px;
+  margin-bottom: 20px;
+}
+.card-title {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 12px;
+  display: flex; align-items: center; gap: 10px;
+}
+.card-title .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+}
+.dot-purple { background: var(--accent); }
+.dot-green  { background: var(--accent2); }
+.dot-orange { background: var(--accent3); }
+.dot-pink   { background: var(--accent4); }
+
+/* ─── Code blocks ─── */
+pre {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  overflow-x: auto;
+  margin: 12px 0;
+  position: relative;
+}
+code {
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.75;
+  color: #c5c6db;
+}
+.kw  { color: #c792ea; }
+.fn  { color: #82aaff; }
+.str { color: #c3e88d; }
+.num { color: #f78c6c; }
+.cmt { color: #546e7a; font-style: italic; }
+.op  { color: #89ddff; }
+
+.copy-btn {
+  position: absolute; top: 10px; right: 10px;
+  background: var(--surface3);
+  border: 1px solid var(--border2);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 3px 9px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+.copy-btn:hover { color: var(--text); background: var(--border2); }
+
+/* ─── Info boxes ─── */
+.info-box {
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  margin: 14px 0;
+  font-size: 14px;
+  border-left: 3px solid;
+}
+.info-box.tip  { background: #1a1f2e; border-color: var(--accent); color: #a8b4e0; }
+.info-box.note { background: #1a2620; border-color: var(--accent2); color: #9dcfba; }
+.info-box.warn { background: #2a1e14; border-color: var(--accent3); color: #ddb88a; }
+
+/* ─── Topic explanation text ─── */
+.explain {
+  font-size: 14.5px;
+  color: #b0b0c8;
+  line-height: 1.8;
+  margin-bottom: 16px;
+}
+
+/* ─── Problems toggle ─── */
+.problems-toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  padding: 14px 20px;
+  margin: 24px 0 0;
+  transition: background 0.15s, border-color 0.15s;
+  user-select: none;
+}
+.problems-toggle:hover {
+  background: var(--surface3);
+  border-color: var(--accent);
+}
+.toggle-icon {
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  background: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+  transition: transform 0.2s;
+}
+.problems-toggle.open .toggle-icon { transform: rotate(45deg); }
+.toggle-text { flex: 1; }
+.toggle-text strong {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text);
+}
+.toggle-text span {
+  font-size: 12px;
+  color: var(--muted);
+}
+.toggle-arrow {
+  color: var(--muted);
+  font-size: 14px;
+  transition: transform 0.2s;
+}
+.problems-toggle.open .toggle-arrow { transform: rotate(180deg); }
+
+.problems-content {
+  display: none;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 var(--radius) var(--radius);
+  padding: 20px 24px;
+  margin-top: -2px;
+}
+.problems-content.open { display: block; }
+
+.problem-item {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.problem-item:last-child { border-bottom: none; }
+.problem-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+.problem-q {
+  font-size: 13.5px;
+  color: #cccce0;
+  margin-bottom: 8px;
+}
+
+/* ─── Divider ─── */
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 32px 0;
+}
+
+/* ─── Inline code ─── */
+.ic {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  background: var(--surface3);
+  color: #c3e88d;
+  padding: 1px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--border2);
+}
+
+/* ─── Table ─── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+  margin: 14px 0;
+}
+th {
+  text-align: left;
+  padding: 9px 14px;
+  background: var(--surface2);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border2);
+}
+td {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  color: #c0c0d8;
+}
+tr:last-child td { border-bottom: none; }
+td code { background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+
+/* ─── Hero / home ─── */
+.hero {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 40px 44px;
+  margin-bottom: 32px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 220px; height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #7c6dfa18, transparent 70%);
+  pointer-events: none;
+}
+.hero-greeting {
+  font-size: 12px;
+  font-family: var(--mono);
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.hero-title {
+  font-size: 32px;
+  font-weight: 300;
+  color: var(--text);
+  margin-bottom: 10px;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+.hero-title strong { font-weight: 500; color: #fff; }
+.hero-desc {
+  font-size: 14px;
+  color: var(--muted);
+  max-width: 420px;
+  line-height: 1.7;
+}
+
+.topic-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+.topic-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, transform 0.15s;
+}
+.topic-card:hover {
+  border-color: var(--accent);
+  background: var(--surface3);
+  transform: translateY(-2px);
+}
+.tc-icon {
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+.tc-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 3px;
+}
+.tc-day {
+  font-size: 11px;
+  font-family: var(--mono);
+  color: var(--muted);
+}
+
+/* ─── Method table shorthand ─── */
+.method-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+.method-pill {
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  color: var(--accent2);
+}
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+/* ─── Animations ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.section.active { animation: fadeUp 0.25s ease; }
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+<!-- ══════════════ SIDEBAR ══════════════ -->
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">py_notes</div>
+    <div class="sidebar-sub">Thamizh · Python Revision</div>
+  </div>
+
+  <div class="sidebar-section">Overview</div>
+  <a class="nav-item active" onclick="show('home')">
+    <span class="nav-dot"></span>Home
+  </a>
+
+  <div class="sidebar-section">Core Topics</div>
+  <a class="nav-item" onclick="show('variables')">
+    <span class="nav-dot"></span>Variables &amp; Types
+  </a>
+  <a class="nav-item" onclick="show('conditions')">
+    <span class="nav-dot"></span>Conditions
+  </a>
+  <a class="nav-item" onclick="show('loops')">
+    <span class="nav-dot"></span>Loops
+  </a>
+  <a class="nav-item" onclick="show('patterns')">
+    <span class="nav-dot"></span>Patterns
+  </a>
+
+  <div class="sidebar-section">Data Structures</div>
+  <a class="nav-item" onclick="show('list')">
+    <span class="nav-dot"></span>List
+  </a>
+  <a class="nav-item" onclick="show('strings')">
+    <span class="nav-dot"></span>Strings
+  </a>
+  <a class="nav-item" onclick="show('dict')">
+    <span class="nav-dot"></span>Dictionary
+  </a>
+  <a class="nav-item" onclick="show('set')">
+    <span class="nav-dot"></span>Set
+  </a>
+  <a class="nav-item" onclick="show('tuple')">
+    <span class="nav-dot"></span>Tuple
+  </a>
+
+  <div class="sidebar-section">Projects</div>
+  <a class="nav-item" onclick="show('tasks')">
+    <span class="nav-dot"></span>AI Mini Tasks
+  </a>
+
+  <div class="progress-bar-wrap">
+    <div class="progress-label"><span>Progress</span><span>Day 5 / 13</span></div>
+    <div class="progress-track"><div class="progress-fill"></div></div>
+  </div>
+</nav>
+
+<!-- ══════════════ MAIN CONTENT ══════════════ -->
+<main class="main">
+
+<!-- ─── HOME ─── -->
+<div class="section active" id="sec-home">
+  <div class="hero">
+    <div class="hero-greeting">👋 Welcome back</div>
+    <div class="hero-title">Your <strong>Python</strong><br>Revision Hub</div>
+    <div class="hero-desc">Everything you've learned, structured and ready to review. Pick any topic from the sidebar or jump in below.</div>
+  </div>
+
+  <div class="card-title" style="margin-bottom:14px;padding-left:4px;">
+    <span class="dot dot-purple"></span>ALL TOPICS
+  </div>
+  <div class="topic-grid">
+    <div class="topic-card" onclick="show('variables')">
+      <div class="tc-icon">📦</div>
+      <div class="tc-name">Variables &amp; Types</div>
+      <div class="tc-day">Day 1</div>
+    </div>
+    <div class="topic-card" onclick="show('conditions')">
+      <div class="tc-icon">🔀</div>
+      <div class="tc-name">Conditions</div>
+      <div class="tc-day">Day 2</div>
+    </div>
+    <div class="topic-card" onclick="show('loops')">
+      <div class="tc-icon">🔁</div>
+      <div class="tc-name">Loops</div>
+      <div class="tc-day">Day 3</div>
+    </div>
+    <div class="topic-card" onclick="show('patterns')">
+      <div class="tc-icon">⭐</div>
+      <div class="tc-name">Patterns</div>
+      <div class="tc-day">Day 3</div>
+    </div>
+    <div class="topic-card" onclick="show('list')">
+      <div class="tc-icon">📋</div>
+      <div class="tc-name">List</div>
+      <div class="tc-day">Day 4</div>
+    </div>
+    <div class="topic-card" onclick="show('strings')">
+      <div class="tc-icon">🔤</div>
+      <div class="tc-name">Strings</div>
+      <div class="tc-day">Day 4</div>
+    </div>
+    <div class="topic-card" onclick="show('dict')">
+      <div class="tc-icon">📖</div>
+      <div class="tc-name">Dictionary</div>
+      <div class="tc-day">Day 5</div>
+    </div>
+    <div class="topic-card" onclick="show('set')">
+      <div class="tc-icon">🔵</div>
+      <div class="tc-name">Set</div>
+      <div class="tc-day">Day 5</div>
+    </div>
+    <div class="topic-card" onclick="show('tuple')">
+      <div class="tc-icon">🔒</div>
+      <div class="tc-name">Tuple</div>
+      <div class="tc-day">Day 5</div>
+    </div>
+    <div class="topic-card" onclick="show('tasks')">
+      <div class="tc-icon">🤖</div>
+      <div class="tc-name">AI Mini Tasks</div>
+      <div class="tc-day">Task 1</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── VARIABLES ─── -->
+<div class="section" id="sec-variables">
+  <div class="page-title">Variables &amp; Types</div>
+  <div class="page-tag">Day 1 · Fundamentals</div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot dot-purple"></span>What is a Variable?</div>
+    <p class="explain">A variable is a named container that stores a value in memory. Python automatically figures out the type — no need to declare it.</p>
+    <pre><code><span class="cmt"># Assigning variables</span>
+name   <span class="op">=</span> <span class="str">"Thamizh"</span>     <span class="cmt"># str</span>
+age    <span class="op">=</span> <span class="num">21</span>           <span class="cmt"># int</span>
+height <span class="op">=</span> <span class="num">5.8</span>          <span class="cmt"># float</span>
+active <span class="op">=</span> <span class="kw">True</span>         <span class="cmt"># bool</span>
+<button class="copy-btn" onclick="copyCode(this)">copy</button></code></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot dot-green"></span>Data Types</div>
+    <table>
+      <tr><th>Type</th><th>Example</th><th>Description</th></tr>
+      <tr><td><code>int</code></td><td><code>10, -5, 0</code></td><td>Whole numbers</td></tr>
+      <tr><td><code>float</code></td><td><code>3.14, -0.5</code></td><td>Decimal numbers</td></tr>
+      <tr><td><code>str</code></td><td><code>"hello"</code></td><td>Text / characters</td></tr>
+      <tr><td><code>bool</code></td><td><code>True / False</code></td><td>Boolean values</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot dot-orange"></span>Input / Output &amp; Type Casting</div>
+    <p class="explain">All <span class="ic">input()</span> values are strings by default. Use type casting to convert them.</p>
+    <pre><code>name   <span class="op">=</span> <span class="fn">input</span>(<span class="str">"Enter name: "</span>)          <span class="cmt"># str</span>
+age    <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>(<span class="str">"Enter age: "</span>))       <span class="cmt"># int</span>
+height <span class="op">=</span> <span class="fn">float</span>(<span class="fn">input</span>(<span class="str">"Enter height: "</span>))   <span class="cmt"># float</span>
+
+<span class="fn">print</span>(<span class="fn">f</span><span class="str">"Hi {name}, you are {age} years old and {height}m tall."</span>)
+<button class="copy-btn" onclick="copyCode(this)">copy</button></code></pre>
+
+    <div class="info-box tip">💡 f-strings (f"...") let you embed variables directly inside strings using curly braces <span class="ic">{variable}</span>.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot dot-pink"></span>Arithmetic Operators</div>
+    <pre><code>a, b <span class="op">=</span> <span class="num">10</span>, <span class="num">3</span>
+<span class="fn">print</span>(a <span class="op">+</span> b)   <span class="cmt"># 13  — Addition</span>
+<span class="fn">print</span>(a <span class="op">-</span> b)   <span class="cmt"># 7   — Subtraction</span>
+<span class="fn">print</span>(a <span class="op">*</span> b)   <span class="cmt"># 30  — Multiplication</span>
+<span class="fn">print</span>(a <span class="op">/</span> b)   <span class="cmt"># 3.33 — Division (float)</span>
+<span class="fn">print</span>(a <span class="op">//</span> b)  <span class="cmt"># 3   — Floor division</span>
+<span class="fn">print</span>(a <span class="op">%</span> b)   <span class="cmt"># 1   — Remainder (modulo)</span>
+<span class="fn">print</span>(a <span class="op">**</span> b)  <span class="cmt"># 1000 — Power</span>
+<button class="copy-btn" onclick="copyCode(this)">copy</button></code></pre>
+  </div>
+
+  <!-- PROBLEMS TOGGLE -->
+  <div class="problems-toggle" onclick="toggleProblems(this)">
+    <div class="toggle-icon">+</div>
+    <div class="toggle-text">
+      <strong>Practiced Problems</strong>
+      <span>5 problems you solved on Day 1</span>
+    </div>
+    <span class="toggle-arrow">▾</span>
+  </div>
+  <div class="problems-content">
+    <div class="problem-item">
+      <div class="problem-num">Q1</div>
+      <div class="problem-q">Take name, age, height as input and print: "Hi Thamizh, you are 21 years old and 5.8m tall."</div>
+      <pre><code>name   <span class="op">=</span> <span class="fn">input</span>(<span class="str">"Enter your name: "</span>)
+age    <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>(<span class="str">"Enter your age: "</span>))
+height <span class="op">=</span> <span class="fn">float</span>(<span class="fn">input</span>(<span class="str">"Enter your height: "</span>))
+<span class="fn">print</span>(<span class="fn">f</span><span class="str">"Hi {name}, you are {age} years old and {height}m tall."</span>)</code></pre>
+    </div>
+    <div class="problem-item">
+      <div class="problem-num">Q2</div>
+      <div class="problem-q">Take Celsius, convert to Fahrenheit and Kelvin.</div>
+      <pre><code>celsius    <span class="op">=</span> <span class="fn">float</span>(<span class="fn">input</span>(<span class="str">"Enter celsius: "</span>))
+fahrenheit <span class="op">=</span> (celsius <span class="op">*</span> <span class="num">9</span><span class="op">/</span><span class="num">5</span>) <span class="op">+</span> <span class="num">32</span>
+kelvin     <span class="op">=</span> celsius <span class="op">+</span> <span class="num">273.15</span>
+<span class="fn">print</span>(<span class="str">"Fahrenheit:"</span>, fahrenheit)
+<span class="fn">print</span>(<span class="str">"Kelvin:"</span>, kelvin)</code></pre>
+    </div>
+    <div class="problem-item">
+      <div class="problem-num">Q3</div>
+      <div class="problem-q">Take two numbers and print sum, difference, product, quotient, remainder.</div>
+    </div>
+    <div class="problem-item">
+      <div class="problem-num">Q4</div>
+      <div class="problem-q">Take a string, print its length, uppercase version, and whether it contains 'a'.</div>
+    </div>
+    <div class="problem-item">
+      <div class="problem-num">Q5</div>
+      <div class="problem-q">Take a number, check if it's positive/negative/zero and even/odd.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── CONDITIONS ─── -->
+<div class="section" id="sec-conditions">
+  <div class="page-title">Conditions</div>
+  <div class="page-tag">Day 2 · Decision Making</div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot dot-purple"></span>if / elif / else</div>
+    <p class="explain">Conditions let your program make decisions. Python uses indentation (4 spaces) to define blocks.</p>
+    <pre><code><span class="cmt"># Basic structure</span>
+<span class="kw">if</span> condition:
+    <span class="cmt"># runs when True</span>
+<span class="kw">elif</span> another:
+    <span class="cmt"># runs when first is False and this is True</span>
+<span class="kw">else</span>:
+    <span class="cmt"># runs when all above are False</span>
+<button class="copy-btn" onclick="copyCode(this)">copy</button></code></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot dot-green"></span>Comparison &amp; Logical Operators</div>
+    <table>
+      <tr><th>Operator</th><th>Meaning</th><th>Example</th></tr>
+      <tr><td><code>==</code></td><td>Equal to</td><td><code>x == 5</code></td></tr>
+      <tr><td><code>!=</code></td><td>Not equal</td><td><code>x != 5</code></td></tr>
+      <tr><td><code>&gt;</code> <code>&lt;</code></td><td>Greater / Less</td><td><code>x &gt; 3</code></td></tr>
+      <tr><td><code>&gt;=</code> <code>&lt;=</code></td><td>Greater/Less or equal</td><td><code>x &gt;= 0</code></td></tr>
+      <tr><td><code>and</code></td><td>Both must be True</td><td><code>x &gt; 0 and x &lt; 10</code></td></tr>
+      <tr><td><code>or</code></td><td>At least one True</td><td><code>x == 0 or x == 1</code></td></tr>
+      <tr><td><code>not</code></td><td>Reverses boolean</td><td><code>not True → False</code></td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot dot-orange"></span>Grade Calculator Example</div>
+    <pre><code>mark <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>(<span class="str">"Enter mark: "</span>))
+
+<span class="kw">if</span> mark <span class="op">&gt;=</span> <span class="num">90</span>:
+    <span class="fn">print</span>(<span class="str">"A Grade"</span>)
+<span class="kw">elif</span> mark <span class="op">&gt;=</span> <span class="num">75</span>:
+    <span class="fn">print</span>(<span class="str">"B Grade"</span>)
+<span class="kw">elif</span> mark <span class="op">&gt;=</span> <span class="num">60</span>:
+    <span class="fn">print</span>(<span class="str">"C Grade"</span>)
+<span class="kw">elif</span> mark <span class="op">&gt;=</span> <span class="num">45</span>:
+    <span class="fn">print</span>(<span class="str">"D Grade"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="str">"F Grade"</span>)
+<button class="copy-btn" onclick="copyCode(this)">copy</button></code></pre>
+    <div class="info-box note">✅ No need to write <span class="ic">mark &gt;= 90 and mark &lt; 100</span>. Once you're inside an elif, earlier conditions are already False.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot dot-pink"></span>Leap Year Logic</div>
+    <pre><code>year <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>(<span class="str">"Enter year: "</span>))
+
+<span class="kw">if</span> year <span class="op">%</span> <span class="num">400</span> <span class="op">==</span> <span class="num">0</span>:
+    <span class="fn">print</span>(<span class="str">"Leap Year"</span>)
+<span class="kw">elif</span> year <span class="op">%</span> <span class="num">4</span> <span class="op">==</span> <span class="num">0</span> <span class="kw">and</span> year <span class="op">%</span> <span class="num">100</span> <span class="op">!=</span> <span class="num">0</span>:
+    <span class="fn">print</span>(<span class="str">"Leap Year"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="str">"Not Leap Year"</span>)
+<button class="copy-btn" onclick="copyCode(this)">copy</button></code></pre>
+  </div>
+
+  <div class="problems-toggle" onclick="toggleProblems(this)">
+    <div class="toggle-icon">+</div>
+    <div class="toggle-text"><strong>Practiced Problems</strong><span>5 problems from Day 2</span></div>
+    <span class="toggle-arrow">▾</span>
+  </div>
+  <div class="problems-content">
+    <div class="problem-item"><div class="problem-num">Q1</div><div class="problem-q">Grade calculator — A/B/C/D/F based on mark.</div></div>
+    <div class="problem-item"><div class="problem-num">Q2</div><div class="problem-q">Find the largest of three numbers entered by user.</div></div>
+    <div class="problem-item"><div class="problem-num">Q3</div><div class="problem-q">Login system — hardcode id='admin' password=1234, verify user input.</div></div>
+    <div class="problem-item"><div class="problem-num">Q4</div><div class="problem-q">Check whether a given year is a leap year or not.</div></div>
+    <div class="problem-item"><div class="problem-num">Q5</div><div class="problem-q">Check whether a character is digit, vowel, consonant, or special character.</div></div>
+  </div>
+</div>
+
+<!-- ─── LOOPS ─── -->
+<div class="section" id="sec-loops">
+  <div class="page-title">Loops</div>
+  <div class="page-tag">Day 3 · Iteration</div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot dot-purple"></span>for loop + range()</div>
+    <p class="explain">Repeat code a fixed number of times. <span class="ic">range(start, stop, step)</span> generates a sequence of numbers.</p>
+    <pre><code><span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, <span class="num">6</span>):     <span class="cmt"># 1 2 3 4 5</span>
+    <span class="fn">print</span>(i)
+
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">10</span>, <span class="num">0</span>, <span class="op">-</span><span class="num">1</span>): <span class="cmt"># 10 9 8 ... 1</span>
+    <span class="fn">print</span>(i)
+
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">2</span>, <span class="num">11</span>, <span class="num">2</span>): <span class="cmt"># 2 4 6 8 10 (evens)</span>
+    <span class="fn">print</span>(i)
+<button class="copy-btn" onclick="copyCode(this)">copy</button></code></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot dot-green"></span>while loop</div>
+    <p class="explain">Repeat as long as a condition is True. Make sure the condition eventually becomes False to avoid infinite loops.</p>
+    <pre><code>i <span class="op">=</span> <span class="num">1</span>
+<span class="kw">while</span> i <span class="op">&lt;=</span> <span class="num">5</span>:
+    <span class="fn">print</span>(i)
+    i <span class="op">+=</span> <span class="num">1</span>   <span class="cmt"># must update i to avoid infinite loop</span>
+
+<span class="cmt"># Infinite loop with break</span>
+<span class="kw">while</span> <span class="kw">True</span>:
+    user <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>(<span class="str">"Enter (0 to quit): "</span>))
+    <span class="kw">if</span> user <span class="op">==</span> <span class="num">0</span>:
+        <span class="kw">break</span>
+<button class="copy-btn" onclick="copyCode(this)">copy</button></code></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot dot-orange"></span>break &amp; continue</div>
+    <pre><code><span class="cmt"># break — exit the loop immediately</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">10</span>):
+    <span class="kw">if</span> i <span class="op">==</span> <span class="num">5</span>: <span class="kw">break</span>
+    <span class="fn">print</span>(i)   <span class="cmt"># prints 0 1 2 3 4</span>
+
+<span class="cmt"># continue — skip current iteration</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, <span class="num">6</span>):
+    <span class="kw">if</span> i <span class="op">%</span> <span class="num">2</span> <span class="op">==</span> <span class="num">0</span>: <span class="kw">continue</span>
+    <span class="fn">print</span>(i)   <span class="cmt"># prints 1 3 5 (skips evens)</span>
+<button class="copy-btn" onclick="copyCode(this)">copy</button></code></pre>
+  </div>
+
+  <div class="problems-toggle" onclick="toggleProblems(this)">
+    <div class="toggle-icon">+</div>
+    <div class="toggle-text"><strong>Practiced Problems</strong><span>9 problems from Day 3</span></div>
+    <span class="toggle-arrow">▾</span>
+  </div>
+  <div class="problems-content">
+    <div class="problem-item"><div class="problem-num">Q1</div><div class="problem-q">Print 1 to 20 using for loop.</div></div>
+    <div class="problem-item"><div class="problem-num">Q2</div><div class="problem-q">Print 20 down to 1.</div></div>
+    <div class="problem-item"><div class="problem-num">Q3</div><div class="problem-q">Print even numbers from 1 to 50.</div></div>
+    <div class="problem-item"><div class="problem-num">Q4</div><div class="problem-q">Print odd numbers 1–50 using continue.</div></div>
+    <div class="problem-item"><div class="problem-num">Q5</div><div class="problem-q">Print multiplication table of 5.</div></div>
+    <div class="problem-item"><div class="problem-num">Q6</div><div class="problem-q">Sum of numbers from 1 to 100.</div></div>
+    <div class="problem-item"><div class="problem-num">Q7</div><div class="problem-q">Sum of even numbers from 1 to 100.</div></div>
+    <div class="problem-item"><div class="problem-num">Q8</div><div class="problem-q">Count multiples of 3 between 1 and 100.</div></div>
+    <div class="problem-item"><div class="problem-num">Q9</div><div class="problem-q">Take 5 numbers from user and print their total.</div></div>
+  </div>
+</div>
+
+<!-- ─── PATTERNS ─── -->
+<div class="section" id="sec-patterns">
+  <div class="page-title">Patterns</div>
+  <div class="page-tag">Day 3 · Nested Loops</div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot dot-purple"></span>How Nested Loops Work</div>
+    <p class="explain">The outer loop controls the <strong>row</strong>, the inner loop controls the <strong>column</strong>. Using <span class="ic">end=' '</span> prevents newline after each print; <span class="ic">print()</span> at the end of outer loop adds the newline.</p>
+    <pre><code><span class="kw">for</span> row <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, <span class="num">6</span>):       <span class="cmt"># outer = rows</span>
+    <span class="kw">for</span> col <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, row<span class="op">+</span><span class="num">1</span>): <span class="cmt"># inner = cols</span>
+        <span class="fn">print</span>(<span class="str">"*"</span>, end<span class="op">=</span><span class="str">' '</span>)
+    <span class="fn">print</span>()   <span class="cmt"># newline after each row</span>
+<button class="copy-btn" onclick="copyCode(this)">copy</button></code></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot dot-green"></span>All 10 Patterns You Practiced</div>
+    <pre><code><span class="cmt"># 1. Full rectangle</span>
+<span class="kw">for</span> row <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>,<span class="num">6</span>):
+    <span class="kw">for</span> col <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>,<span class="num">6</span>): <span class="fn">print</span>(<span class="str">"*"</span>,end<span class="op">=</span><span class="str">' '</span>)
+    <span class="fn">print</span>()
+
+<span class="cmt"># 2. Right triangle (increasing)</span>
+<span class="kw">for</span> row <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>,<span class="num">6</span>):
+    <span class="kw">for</span> col <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, row<span class="op">+</span><span class="num">1</span>): <span class="fn">print</span>(<span class="str">"*"</span>,end<span class="op">=</span><span class="str">' '</span>)
+    <span class="fn">print</span>()
+
+<span class="cmt"># 3. Inverted triangle (decreasing)</span>
+<span class="kw">for</span> row <span class="kw">in</span> <span class="fn">range</span>(<span class="num">5</span>,<span class="num">0</span>,<span class="op">-</span><span class="num">1</span>):
+    <span class="kw">for</span> col <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, row<span class="op">+</span><span class="num">1</span>): <span class="fn">print</span>(<span class="str">"*"</span>,end<span class="op">=</span><span class="str">' '</span>)
+    <span class="fn">print</span>()
+
+<span class="cmt"># 4. Diamond (grow then shrink)</span>
+<span class="kw">for</span> row <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>,<span class="num">10</span>):
+    coltimes <span class="op">=</span> (<span class="num">10</span><span class="op">-</span>row) <span class="kw">if</span> row<span class="op">&gt;</span><span class="num">5</span> <span class="kw">else</span> row
+    <span class="kw">for</span> col <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, coltimes<span class="op">+</span><span class="num">1</span>): <span class="fn">print</span>(<span class="str">"*"</span>,end<span class="op">=</span><span class="str">' '</span>)
+    <span class="fn">print</span>()
+
+<span class="cmt"># 5. Increasing number triangle</span>
+num <span class="op">=</span> <span class="num">1</span>
+<span class="kw">for</span> row <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>,<span class="num">6</span>):
+    <span class="kw">for</span> col <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, row<span class="op">+</span><span class="num">1</span>):
+        <span class="fn">print</span>(num, end<span class="op">=</span><span class="str">' '</span>); num <span class="op">+=</span> <span class="num">1</span>
+    <span class="fn">print</span>()
+<button class="copy-btn" onclick="copyCode(this)">copy</button></code></pre>
+  </div>
+</div>
+
+<!-- ─── LIST ─── -->
+<div class="section" id="sec-list">
+  <div class="page-title">List</div>
+  <div class="page-tag">Day 4 · Data Structure</div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot dot-purple"></span>What is a List?</div>
+    <p class="explain">An ordered, mutable collection of items. Items can be of any type. Lists support indexing, slicing, and iteration.</p>
+    <pre><code>nums <span class="op">=</span> [<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">40</span>, <span class="num">50</span>]
+
+<span class="fn">print</span>(nums[<span class="num">0</span>])    <span class="cmt"># 10  — first</span>
+<span class="fn">print</span>(nums[<span class="op">-</span><span class="num">1</span>])   <span class="cmt"># 50  — last</span>
+<span class="fn">print</span>(nums[<span class="num">1</span>:<span class="num">3</span>])  <span class="cmt"># [20, 30] — slice</span>
+<span class="fn">print</span>(nums[::<span class="op">-</span><span class="num">1</span>]) <span class="cmt"># [50,40,30,20,10] — reverse</span>
+<span class="fn">print</span>(<span class="fn">len</span>(nums))  <span class="cmt"># 5</span>
+<button class="copy-btn" onclick="copyCode(this)">copy</button></code></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot dot-green"></span>List Methods</div>
+    <div class="method-row">
+      <span class="method-pill">append()</span>
+      <span class="method-pill">insert()</span>
+      <span class="method-pill">remove()</span>
+      <span class="method-pill">pop()</span>
+      <span class="method-pill">sort()</span>
+      <span class="method-pill">count()</span>
+      <span class="method-pill">index()</span>
+    </div>
+    <pre><code>nums <span class="op">=</span> [<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>]
+nums.append(<span class="num">40</span>)        <span class="cmt"># [10, 20, 30, 40]</span>
+nums.insert(<span class="num">1</span>, <span class="num">99</span>)     <span class="cmt"># [10, 99, 20, 30, 40]</span>
+nums.remove(<span class="num">20</span>)        <span class="cmt"># removes first 20</span>
+nums.pop()             <span class="cmt"># removes last item</span>
+
+nums2 <span class="op">=</span> [<span class="num">5</span>, <span class="num">1</span>, <span class="num">9</span>, <span class="num">2</span>]
+nums2.sort()            <span class="cmt"># [1, 2, 5, 9]</span>
+
+nums3 <span class="op">=</span> [<span class="num">10</span>, <span class="num">20</span>, <span class="num">10</span>, <span class="num">30</span>, <span class="num">10</span>]
+<span class="fn">print</span>(nums3.count(<span class="num">10</span>)) <span class="cmt"># 3</span>
+<span class="fn">print</span>(nums3.index(<span class="num">30</span>)) <span class="cmt"># 3 (position of 30)</span>
+<button class="copy-btn" onclick="copyCode(this)">copy</button></code></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot dot-orange"></span>Nested Lists</div>
+    <pre><code>matrix <span class="op">=</span> [
+    [<span class="num">1</span>, <span class="num">2</span>],
+    [<span class="num">3</span>, <span class="num">4</span>]
+]
+<span class="fn">print</span>(matrix[<span class="num">0</span>][<span class="num">0</span>])  <span class="cmt"># 1</span>
+<span class="fn">print</span>(matrix[<span class="num">1</span>][<span class="num">1</span>])  <span class="cmt"># 4</span>
+
+<span class="kw">for</span> row <span class="kw">in</span> matrix:
+    <span class="kw">for</span> num <span class="kw">in</span> row:
+        <span class="fn">print</span>(num, end<span class="op">=</span><span class="str">' '</span>)
+    <span class="fn">print</span>()
+<button class="copy-btn" onclick="copyCode(this)">copy</button></code></pre>
+  </div>
+
+  <div class="problems-toggle" onclick="toggleProblems(this)">
+    <div class="toggle-icon">+</div>
+    <div class="toggle-text"><strong>Practiced Problems</strong><span>10 problems from Day 4</span></div>
+    <span class="toggle-arrow">▾</span>
+  </div>
+  <div class="problems-content">
+    <div class="problem-item"><div class="problem-num">Q1</div><div class="problem-q">Access first, last element and print length of a list.</div></div>
+    <div class="problem-item"><div class="problem-num">Q2</div><div class="problem-q">Take 5 numbers from user, store in a list and print.</div></div>
+    <div class="problem-item"><div class="problem-num">Q3</div><div class="problem-q">Calculate sum of all elements in a list.</div></div>
+    <div class="problem-item"><div class="problem-num">Q4</div><div class="problem-q">Find the largest number in a list without using max().</div></div>
+    <div class="problem-item"><div class="problem-num">Q5</div><div class="problem-q">Print only even numbers from a list.</div></div>
+    <div class="problem-item"><div class="problem-num">Q6</div><div class="problem-q">Reverse a list using slicing.</div></div>
+    <div class="problem-item"><div class="problem-num">Q7</div><div class="problem-q">Check if a value exists in a list using 'in'.</div></div>
+    <div class="problem-item"><div class="problem-num">Q8</div><div class="problem-q">Sort a list and print.</div></div>
+    <div class="problem-item"><div class="problem-num">Q9</div><div class="problem-q">Count occurrences of a value in a list.</div></div>
+    <div class="problem-item"><div class="problem-num">Q10</div><div class="problem-q">Iterate a 2D nested list and print each row.</div></div>
+  </div>
+</div>
+
+<!-- ─── STRINGS ─── -->
+<div class="section" id="sec-strings">
+  <div class="page-title">Strings</div>
+  <div class="page-tag">Day 4 · Text Processing</div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot dot-purple"></span>Indexing, Slicing, Reverse</div>
+    <p class="explain">Strings are immutable — you can read characters but cannot change them. They support all list-style indexing and slicing.</p>
+    <pre><code>word <span class="op">=</span> <span class="str">"PYTHON"</span>
+<span class="fn">print</span>(word[<span class="num">0</span>])     <span class="cmt"># P</span>
+<span class="fn">print</span>(word[<span class="op">-</span><span class="num">1</span>])    <span class="cmt"># N</span>
+<span class="fn">print</span>(word[<span class="num">1</span>:<span class="num">4</span>])   <span class="cmt"># YTH</span>
+<span class="fn">print</span>(word[::<span class="op">-</span><span class="num">1</span>])  <span class="cmt"># NOHTYP  ← reverse</span>
+<span class="fn">print</span>(<span class="fn">len</span>(word))   <span class="cmt"># 6</span>
+<button class="copy-btn" onclick="copyCode(this)">copy</button></code></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot dot-green"></span>String Methods</div>
+    <div class="method-row">
+      <span class="method-pill">upper()</span>
+      <span class="method-pill">lower()</span>
+      <span class="method-pill">replace()</span>
+      <span class="method-pill">split()</span>
+      <span class="method-pill">strip()</span>
+      <span class="method-pill">join()</span>
+      <span class="method-pill">isdigit()</span>
+      <span class="method-pill">isalpha()</span>
+      <span class="method-pill">isupper()</span>
+    </div>
+    <pre><code>word <span class="op">=</span> <span class="str">"hello world"</span>
+<span class="fn">print</span>(word.upper())          <span class="cmt"># HELLO WORLD</span>
+<span class="fn">print</span>(word.replace(<span class="str">' '</span>,<span class="str">''</span>)) <span class="cmt"># helloworld</span>
+<span class="fn">print</span>(word.split())          <span class="cmt"># ['hello', 'world']</span>
+
+sentence <span class="op">=</span> <span class="str">"I love Python"</span>
+words <span class="op">=</span> sentence.split()
+<span class="fn">print</span>(<span class="fn">len</span>(words))            <span class="cmt"># 3</span>
+<button class="copy-btn" onclick="copyCode(this)">copy</button></code></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot dot-orange"></span>Palindrome Check</div>
+    <pre><code>word <span class="op">=</span> <span class="str">"madam"</span>
+rev  <span class="op">=</span> word[::<span class="op">-</span><span class="num">1</span>]
+<span class="kw">if</span> word <span class="op">==</span> rev:
+    <span class="fn">print</span>(<span class="str">"Palindrome"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="str">"Not Palindrome"</span>)
+<button class="copy-btn" onclick="copyCode(this)">copy</button></code></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot dot-pink"></span>Anagram Check</div>
+    <pre><code>word1 <span class="op">=</span> <span class="str">"heart"</span>
+word2 <span class="op">=</span> <span class="str">"earth"</span>
+<span class="kw">if</span> <span class="fn">sorted</span>(word1) <span class="op">==</span> <span class="fn">sorted</span>(word2):
+    <span class="fn">print</span>(<span class="str">"Anagram"</span>)
+<button class="copy-btn" onclick="copyCode(this)">copy</button></code></pre>
+    <div class="info-box note">✅ <span class="ic">sorted()</span> converts a string into a sorted list of characters — so two anagrams become identical lists.</div>
+  </div>
+
+  <div class="problems-toggle" onclick="toggleProblems(this)">
+    <div class="toggle-icon">+</div>
+    <div class="toggle-text"><strong>Practiced Problems</strong><span>10 problems from Day 4</span></div>
+    <span class="toggle-arrow">▾</span>
+  </div>
+  <div class="problems-content">
+    <div class="problem-item"><div class="problem-num">Q1</div><div class="problem-q">Count vowels in a word.</div></div>
+    <div class="problem-item"><div class="problem-num">Q2</div><div class="problem-q">Count uppercase and lowercase letters.</div></div>
+    <div class="problem-item"><div class="problem-num">Q3</div><div class="problem-q">Check if a word is a palindrome.</div></div>
+    <div class="problem-item"><div class="problem-num">Q4</div><div class="problem-q">Count number of words in a sentence.</div></div>
+    <div class="problem-item"><div class="problem-num">Q5</div><div class="problem-q">Remove all spaces from a string.</div></div>
+    <div class="problem-item"><div class="problem-num">Q6</div><div class="problem-q">Print frequency of each character in a word.</div></div>
+    <div class="problem-item"><div class="problem-num">Q7</div><div class="problem-q">Find the longest word in a sentence.</div></div>
+    <div class="problem-item"><div class="problem-num">Q8</div><div class="problem-q">Reverse the words in a sentence.</div></div>
+    <div class="problem-item"><div class="problem-num">Q9</div><div class="problem-q">Remove duplicate characters from a string.</div></div>
+    <div class="problem-item"><div class="problem-num">Q10</div><div class="problem-q">Check if two words are anagrams.</div></div>
+  </div>
+</div>
+
+<!-- ─── DICTIONARY ─── -->
+<div class="section" id="sec-dict">
+  <div class="page-title">Dictionary</div>
+  <div class="page-tag">Day 5 · Key-Value Pairs</div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot dot-purple"></span>What is a Dictionary?</div>
+    <p class="explain">A dictionary stores data in <strong>key: value</strong> pairs. Keys are unique identifiers; values can be anything. Use it when you need to label your data.</p>
+    <pre><code>student <span class="op">=</span> {
+    <span class="str">"name"</span>: <span class="str">"Ram"</span>,
+    <span class="str">"age"</span>: <span class="num">20</span>,
+    <span class="str">"city"</span>: <span class="str">"Chennai"</span>
+}
+
+<span class="fn">print</span>(student[<span class="str">"name"</span>])   <span class="cmt"># Ram</span>
+student[<span class="str">"age"</span>] <span class="op">=</span> <span class="num">21</span>      <span class="cmt"># update</span>
+student[<span class="str">"dept"</span>] <span class="op">=</span> <span class="str">"AI"</span>  <span class="cmt"># add new key</span>
+<button class="copy-btn" onclick="copyCode(this)">copy</button></code></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot dot-green"></span>Dictionary Methods &amp; Iteration</div>
+    <pre><code><span class="cmt"># Iterating</span>
+<span class="kw">for</span> key <span class="kw">in</span> student:
+    <span class="fn">print</span>(key, <span class="str">"->"</span>, student[key])
+
+<span class="cmt"># Better way using .items()</span>
+<span class="kw">for</span> key, value <span class="kw">in</span> student.items():
+    <span class="fn">print</span>(key, <span class="str">"->"</span>, value)
+
+<span class="cmt"># Check if key exists</span>
+<span class="fn">print</span>(<span class="str">"name"</span> <span class="kw">in</span> student)  <span class="cmt"># True</span>
+<button class="copy-btn" onclick="copyCode(this)">copy</button></code></pre>
+    <div class="method-row">
+      <span class="method-pill">keys()</span>
+      <span class="method-pill">values()</span>
+      <span class="method-pill">items()</span>
+      <span class="method-pill">get()</span>
+      <span class="method-pill">pop()</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot dot-orange"></span>Nested Dictionary</div>
+    <pre><code>employee <span class="op">=</span> {
+    <span class="str">"name"</span>: <span class="str">"Ram"</span>,
+    <span class="str">"salary"</span>: {
+        <span class="str">"jan"</span>: <span class="num">1000</span>,
+        <span class="str">"feb"</span>: <span class="num">1200</span>
+    }
+}
+<span class="fn">print</span>(employee[<span class="str">"salary"</span>][<span class="str">"feb"</span>])   <span class="cmt"># 1200</span>
+
+employee[<span class="str">"salary"</span>][<span class="str">"march"</span>] <span class="op">=</span> <span class="num">1500</span>  <span class="cmt"># add</span>
+
+<span class="kw">for</span> month, amount <span class="kw">in</span> employee[<span class="str">"salary"</span>].items():
+    <span class="fn">print</span>(month, <span class="str">"->"</span>, amount)
+<button class="copy-btn" onclick="copyCode(this)">copy</button></code></pre>
+  </div>
+
+  <div class="problems-toggle" onclick="toggleProblems(this)">
+    <div class="toggle-icon">+</div>
+    <div class="toggle-text"><strong>Practiced Problems</strong><span>15 problems from Day 5</span></div>
+    <span class="toggle-arrow">▾</span>
+  </div>
+  <div class="problems-content">
+    <div class="problem-item"><div class="problem-num">Q1–Q5</div><div class="problem-q">Create a student dict, access values, add city key, update age, print all keys.</div></div>
+    <div class="problem-item"><div class="problem-num">Q6</div><div class="problem-q">Iterate using .items() and print key → value.</div></div>
+    <div class="problem-item"><div class="problem-num">Q7</div><div class="problem-q">Employee dict — add department, print all fields.</div></div>
+    <div class="problem-item"><div class="problem-num">Q8–Q10</div><div class="problem-q">Nested salary dict — access, add, iterate months.</div></div>
+    <div class="problem-item"><div class="problem-num">Q11–Q13</div><div class="problem-q">Car dict — print, update year 2024, check if 'brand' key exists.</div></div>
+    <div class="problem-item"><div class="problem-num">Q14–Q15</div><div class="problem-q">School dict with student1/student2 — access nested names, print all.</div></div>
+  </div>
+</div>
+
+<!-- ─── SET ─── -->
+<div class="section" id="sec-set">
+  <div class="page-title">Set</div>
+  <div class="page-tag">Day 5 · Unique Collections</div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot dot-purple"></span>What is a Set?</div>
+    <p class="explain">A set is an unordered collection with no duplicates. It's the fastest way to remove duplicates and check membership.</p>
+    <pre><code>nums <span class="op">=</span> {<span class="num">1</span>, <span class="num">2</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">4</span>}
+<span class="fn">print</span>(nums)       <span class="cmt"># {1, 2, 3, 4} — duplicates removed</span>
+
+<span class="cmt"># Empty set — must use set(), not {}</span>
+empty <span class="op">=</span> <span class="fn">set</span>()
+
+<span class="cmt"># Remove duplicates from a list</span>
+lst <span class="op">=</span> [<span class="num">1</span>, <span class="num">2</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">3</span>]
+unique <span class="op">=</span> <span class="fn">list</span>(<span class="fn">set</span>(lst))
+<span class="fn">print</span>(unique)     <span class="cmt"># [1, 2, 3]</span>
+<button class="copy-btn" onclick="copyCode(this)">copy</button></code></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot dot-green"></span>Set Operations</div>
+    <pre><code>a <span class="op">=</span> {<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>}
+b <span class="op">=</span> {<span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>}
+
+<span class="fn">print</span>(a <span class="op">|</span> b)  <span class="cmt"># {1,2,3,4,5}  — Union (all)</span>
+<span class="fn">print</span>(a <span class="op">&amp;</span> b)  <span class="cmt"># {3}           — Intersection (common)</span>
+<span class="fn">print</span>(a <span class="op">-</span> b)  <span class="cmt"># {1,2}         — Difference (only in a)</span>
+
+a.add(<span class="num">10</span>)     <span class="cmt"># add element</span>
+a.remove(<span class="num">2</span>)   <span class="cmt"># remove element</span>
+<button class="copy-btn" onclick="copyCode(this)">copy</button></code></pre>
+  </div>
+
+  <div class="info-box warn">⚠️ Sets are unordered — you cannot index them with <span class="ic">set[0]</span>. Use a list if order matters.</div>
+
+  <div class="problems-toggle" onclick="toggleProblems(this)">
+    <div class="toggle-icon">+</div>
+    <div class="toggle-text"><strong>Practiced Problems</strong><span>7 problems from Day 5</span></div>
+    <span class="toggle-arrow">▾</span>
+  </div>
+  <div class="problems-content">
+    <div class="problem-item"><div class="problem-num">Q1</div><div class="problem-q">Create a set with duplicates and print (auto-removed).</div></div>
+    <div class="problem-item"><div class="problem-num">Q2</div><div class="problem-q">Add a new element using add().</div></div>
+    <div class="problem-item"><div class="problem-num">Q3</div><div class="problem-q">Remove an element using remove().</div></div>
+    <div class="problem-item"><div class="problem-num">Q4</div><div class="problem-q">Iterate all elements of a set.</div></div>
+    <div class="problem-item"><div class="problem-num">Q5</div><div class="problem-q">Check if 3 is in a set.</div></div>
+    <div class="problem-item"><div class="problem-num">Q6</div><div class="problem-q">Remove duplicates from a list using set().</div></div>
+    <div class="problem-item"><div class="problem-num">Q7</div><div class="problem-q">Two sets a, b — print union, intersection, difference.</div></div>
+  </div>
+</div>
+
+<!-- ─── TUPLE ─── -->
+<div class="section" id="sec-tuple">
+  <div class="page-title">Tuple</div>
+  <div class="page-tag">Day 5 · Immutable Sequence</div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot dot-purple"></span>What is a Tuple?</div>
+    <p class="explain">A tuple is like a list but <strong>immutable</strong> — once created, you cannot change its values. Use it for fixed data that should not change.</p>
+    <pre><code>nums <span class="op">=</span> (<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">40</span>)
+
+<span class="fn">print</span>(nums[<span class="num">0</span>])      <span class="cmt"># 10</span>
+<span class="fn">print</span>(nums[<span class="op">-</span><span class="num">1</span>])     <span class="cmt"># 40</span>
+
+<span class="kw">for</span> i <span class="kw">in</span> nums:
+    <span class="fn">print</span>(i)
+
+<span class="cmt"># This will RAISE an ERROR:</span>
+<span class="cmt"># nums[0] = 99  ← TypeError: 'tuple' does not support item assignment</span>
+<button class="copy-btn" onclick="copyCode(this)">copy</button></code></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot dot-green"></span>Tuple Methods &amp; Conversion</div>
+    <pre><code>nums <span class="op">=</span> (<span class="num">1</span>, <span class="num">2</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">2</span>)
+<span class="fn">print</span>(nums.count(<span class="num">2</span>))  <span class="cmt"># 3  — how many times 2 appears</span>
+<span class="fn">print</span>(nums.index(<span class="num">3</span>))  <span class="cmt"># 3  — position of 3</span>
+
+<span class="cmt"># Conversion</span>
+lst <span class="op">=</span> [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>]
+tup <span class="op">=</span> <span class="fn">tuple</span>(lst)       <span class="cmt"># list → tuple</span>
+back <span class="op">=</span> <span class="fn">list</span>(tup)       <span class="cmt"># tuple → list</span>
+
+<span class="fn">print</span>(<span class="fn">type</span>(tup))       <span class="cmt"># &lt;class 'tuple'&gt;</span>
+<button class="copy-btn" onclick="copyCode(this)">copy</button></code></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot dot-orange"></span>List vs Tuple vs Set — Quick Comparison</div>
+    <table>
+      <tr><th>Feature</th><th>List</th><th>Tuple</th><th>Set</th></tr>
+      <tr><td>Ordered</td><td>✅</td><td>✅</td><td>❌</td></tr>
+      <tr><td>Mutable</td><td>✅</td><td>❌</td><td>✅ (add/remove)</td></tr>
+      <tr><td>Duplicates</td><td>✅</td><td>✅</td><td>❌</td></tr>
+      <tr><td>Indexing</td><td>✅</td><td>✅</td><td>❌</td></tr>
+      <tr><td>Syntax</td><td><code>[ ]</code></td><td><code>( )</code></td><td><code>{ }</code></td></tr>
+    </table>
+  </div>
+
+  <div class="problems-toggle" onclick="toggleProblems(this)">
+    <div class="toggle-icon">+</div>
+    <div class="toggle-text"><strong>Practiced Problems</strong><span>7 problems from Day 5</span></div>
+    <span class="toggle-arrow">▾</span>
+  </div>
+  <div class="problems-content">
+    <div class="problem-item"><div class="problem-num">Q1</div><div class="problem-q">Access first and last element of a tuple.</div></div>
+    <div class="problem-item"><div class="problem-num">Q2</div><div class="problem-q">Iterate all elements of a tuple.</div></div>
+    <div class="problem-item"><div class="problem-num">Q3</div><div class="problem-q">Try to modify a tuple and observe the error.</div></div>
+    <div class="problem-item"><div class="problem-num">Q4</div><div class="problem-q">Count how many times 2 appears in a tuple.</div></div>
+    <div class="problem-item"><div class="problem-num">Q5</div><div class="problem-q">Find the index of a specific value.</div></div>
+    <div class="problem-item"><div class="problem-num">Q6</div><div class="problem-q">Convert a list to a tuple and print its type.</div></div>
+    <div class="problem-item"><div class="problem-num">Q7</div><div class="problem-q">Convert a tuple back to a list.</div></div>
+  </div>
+</div>
+
+<!-- ─── TASKS ─── -->
+<div class="section" id="sec-tasks">
+  <div class="page-title">AI Mini Tasks</div>
+  <div class="page-tag">Task 1 · Real-World Practice</div>
+
+  <div class="info-box note">🤖 These tasks apply Python to AI/ML-flavored problems — the kind of logic used in real computer vision pipelines.</div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot dot-purple"></span>Task 1 — Student Marks Analyzer</div>
+    <pre><code>marks <span class="op">=</span> [<span class="num">45</span>, <span class="num">90</span>, <span class="num">32</span>, <span class="num">76</span>, <span class="num">88</span>]
+largest <span class="op">=</span> lowest <span class="op">=</span> marks[<span class="num">0</span>]
+
+<span class="kw">for</span> num <span class="kw">in</span> marks:
+    <span class="kw">if</span> num <span class="op">&lt;</span> lowest:  lowest <span class="op">=</span> num
+    <span class="kw">if</span> num <span class="op">&gt;</span> largest: largest <span class="op">=</span> num
+
+<span class="fn">print</span>(<span class="str">"Highest:"</span>, largest)
+<span class="fn">print</span>(<span class="str">"Lowest:"</span>, lowest)
+<span class="fn">print</span>(<span class="str">"Average:"</span>, <span class="fn">sum</span>(marks)<span class="op">/</span><span class="fn">len</span>(marks))
+
+pass_count <span class="op">=</span> <span class="fn">sum</span>(<span class="num">1</span> <span class="kw">for</span> m <span class="kw">in</span> marks <span class="kw">if</span> m <span class="op">&gt;=</span> <span class="num">40</span>)
+<span class="fn">print</span>(<span class="str">"Pass Count:"</span>, pass_count)
+<button class="copy-btn" onclick="copyCode(this)">copy</button></code></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot dot-green"></span>Task 2 — Object Detection Counter</div>
+    <pre><code>detections <span class="op">=</span> [<span class="str">"person"</span>, <span class="str">"car"</span>, <span class="str">"person"</span>, <span class="str">"dog"</span>, <span class="str">"car"</span>]
+count_dict <span class="op">=</span> {}
+
+<span class="kw">for</span> obj <span class="kw">in</span> detections:
+    <span class="kw">if</span> obj <span class="kw">not in</span> count_dict:
+        count_dict[obj] <span class="op">=</span> <span class="num">1</span>
+    <span class="kw">else</span>:
+        count_dict[obj] <span class="op">+=</span> <span class="num">1</span>
+
+<span class="fn">print</span>(count_dict)
+<span class="cmt"># {'person': 2, 'car': 2, 'dog': 1}</span>
+<button class="copy-btn" onclick="copyCode(this)">copy</button></code></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot dot-orange"></span>Task 4 — Confidence Score Analyzer</div>
+    <pre><code>scores <span class="op">=</span> [<span class="num">0.91</span>, <span class="num">0.45</span>, <span class="num">0.88</span>, <span class="num">0.32</span>, <span class="num">0.99</span>]
+largest <span class="op">=</span> scores[<span class="num">0</span>]
+low_scores <span class="op">=</span> []
+
+<span class="kw">for</span> x <span class="kw">in</span> scores:
+    <span class="kw">if</span> x <span class="op">&gt;</span> largest:
+        largest <span class="op">=</span> x
+    <span class="kw">if</span> x <span class="op">&lt;</span> <span class="num">0.5</span>:
+        low_scores.append(x)
+
+<span class="fn">print</span>(<span class="str">"Highest:"</span>, largest)
+<span class="fn">print</span>(<span class="str">"Low scores:"</span>, low_scores)
+<button class="copy-btn" onclick="copyCode(this)">copy</button></code></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot dot-pink"></span>Task 6 — Bounding Box Area</div>
+    <pre><code>bbox <span class="op">=</span> [<span class="num">100</span>, <span class="num">200</span>, <span class="num">300</span>, <span class="num">400</span>]
+x1, y1, x2, y2 <span class="op">=</span> bbox
+
+width  <span class="op">=</span> x2 <span class="op">-</span> x1   <span class="cmt"># 200</span>
+height <span class="op">=</span> y2 <span class="op">-</span> y1   <span class="cmt"># 200</span>
+area   <span class="op">=</span> width <span class="op">*</span> height  <span class="cmt"># 40000</span>
+
+<span class="fn">print</span>(<span class="str">"Width:"</span>, width)
+<span class="fn">print</span>(<span class="str">"Height:"</span>, height)
+<span class="fn">print</span>(<span class="str">"Area:"</span>, area)
+<button class="copy-btn" onclick="copyCode(this)">copy</button></code></pre>
+  </div>
+
+  <div class="problems-toggle" onclick="toggleProblems(this)">
+    <div class="toggle-icon">+</div>
+    <div class="toggle-text"><strong>All 10 Tasks — Full Code</strong><span>Click to see all tasks you completed</span></div>
+    <span class="toggle-arrow">▾</span>
+  </div>
+  <div class="problems-content">
+    <div class="problem-item"><div class="problem-num">Task 1</div><div class="problem-q">Student Marks Analyzer — highest, lowest, average, pass count.</div></div>
+    <div class="problem-item"><div class="problem-num">Task 2</div><div class="problem-q">Object Detection Counter — count each detected object type.</div></div>
+    <div class="problem-item"><div class="problem-num">Task 3</div><div class="problem-q">Duplicate Label Remover — remove duplicate class labels using set.</div></div>
+    <div class="problem-item"><div class="problem-num">Task 4</div><div class="problem-q">Confidence Score Analyzer — highest score, scores below 0.5.</div></div>
+    <div class="problem-item"><div class="problem-num">Task 5</div><div class="problem-q">Login System — verify username and password using dict.</div></div>
+    <div class="problem-item"><div class="problem-num">Task 6</div><div class="problem-q">Bounding Box — unpack [x1,y1,x2,y2] and compute width, height, area.</div></div>
+    <div class="problem-item"><div class="problem-num">Task 7</div><div class="problem-q">Word Frequency Counter — count each word in a sentence using dict.</div></div>
+    <div class="problem-item"><div class="problem-num">Task 8</div><div class="problem-q">Frame ID Tracker — unique IDs using set, count repeated ones.</div></div>
+    <div class="problem-item"><div class="problem-num">Task 9</div><div class="problem-q">Dataset Info Viewer — print COCO dict using capitalize and separator.</div></div>
+    <div class="problem-item"><div class="problem-num">Task 10</div><div class="problem-q">Prediction Filter — filter tuples with confidence &gt; 0.5.</div></div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  const links = document.querySelectorAll('.nav-item');
+  links.forEach(link => {
+    const fn = link.getAttribute('onclick');
+    if (fn && fn.includes("'" + id + "'")) link.classList.add('active');
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function toggleProblems(btn) {
+  btn.classList.toggle('open');
+  const content = btn.nextElementSibling;
+  content.classList.toggle('open');
+}
+
+function copyCode(btn) {
+  const pre = btn.parentElement;
+  const text = pre.innerText.replace('copy', '').trim();
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'copied!';
+    setTimeout(() => btn.textContent = 'copy', 1800);
+  });
+}
+</script>
+</body>
+</html>
